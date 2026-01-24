@@ -1,0 +1,20 @@
+services:
+  # Minecraft Server Template
+  # Note: Game servers use direct ports, not Traefik reverse proxy
+  minecraft:
+    image: itzg/minecraft-server:latest
+    container_name: minecraft
+    restart: unless-stopped
+    ports:
+      - "25565:25565"
+    volumes:
+      - ./data/minecraft:/data
+    environment:
+      - EULA=TRUE
+      - TYPE=PAPER
+      - MEMORY=4G
+    # Optional: uncomment to set server properties
+    # - SERVER_NAME=My Minecraft Server
+    # - MAX_PLAYERS=20
+    # - DIFFICULTY=normal
+    # - MODE=survival
