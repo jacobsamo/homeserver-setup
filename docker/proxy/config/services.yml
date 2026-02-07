@@ -2,32 +2,34 @@ http:
   routers:
     proxmox:
       entryPoints:
-        - "https"
+        - "websecure"
       rule: "Host(`proxmox.${DOMAIN}`)"
       middlewares:
         - default-headers
         - https-redirectscheme
       tls: {}
       service: proxmox
-    # homeassistant:
-    #   rule: Host(`homeassistant.${DOMAIN}`)
-    #   service: homeassistant
-    #   entryPoints:
-    #     - https
-    #   tls:
-    #     certResolver: cloudflare
+    homeassistant:
+      rule: "Host(`homeassistant.${DOMAIN}`)"
+      service: homeassistant
+      entryPoints:
+        - "websecure"
+      middlewares:
+        - homeassistant-headers
+      tls:
+        certResolver: cloudflare
     # n8n:
     #   rule: Host(`n8n.${DOMAIN}`)
     #   service: n8n
     #   entryPoints:
-    #     - https
+    #     - websecure
     #   tls:
     #     certResolver: cloudflare
     # pihole:
     #   rule: Host(`pihole.${DOMAIN}`)
     #   service: pihole
     #   entryPoints:
-    #     - https
+    #     - websecure
     #   tls:
     #     certResolver: cloudflare
 
@@ -36,10 +38,10 @@ http:
       loadBalancer:
         servers:
           - url: https://192.168.0.102:8006 # Use https:// if required
-    # homeassistant:
-    #   loadBalancer:
-    #     servers:
-    #       - url: http://192.168.0.105:8123
+    homeassistant:
+      loadBalancer:
+        servers:
+          - url: http://192.168.0.105:8123
     # n8n:
     #   loadBalancer:
     #     servers:
@@ -64,6 +66,11 @@ http:
         stsPreload: true
         stsSeconds: 15552000
         customFrameOptionsValue: SAMEORIGIN
+        customRequestHeaders:
+          X-Forwarded-Proto: https
+
+    homeassistant-headers:
+      headers:
         customRequestHeaders:
           X-Forwarded-Proto: https
 
