@@ -1,0 +1,9 @@
+# Environment (contains passwords)
+.env
+
+# Minecraft server data
+minecraft/data/
+minecraft/backups/
+
+# Old data directory (from previous config)
+data/

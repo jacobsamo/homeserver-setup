@@ -1,0 +1,96 @@
+services:
+  minecraft:
+    image: itzg/minecraft-server:java21
+    container_name: minecraft
+    restart: unless-stopped
+    ports:
+      - "25565:25565"       # Java Edition
+      - "19132:19132/udp"   # Bedrock Edition (GeyserMC)
+    volumes:
+      - ./minecraft/data:/data
+    environment:
+      # Agreement & Server Type
+      EULA: "TRUE"
+      TYPE: PAPER
+      VERSION: LATEST
+
+      # Performance
+      MEMORY: 4G
+      USE_AIKAR_FLAGS: "true"
+
+      # Plugins - GeyserMC + Floodgate for Bedrock support
+      PLUGINS: |
+        https://download.geysermc.org/v2/projects/geyser/versions/latest/builds/latest/downloads/spigot
+        https://download.geysermc.org/v2/projects/floodgate/versions/latest/builds/latest/downloads/spigot
+
+      # Server Properties
+      DIFFICULTY: hard
+      MODE: survival
+      MAX_PLAYERS: "10"
+      VIEW_DISTANCE: "9"
+      SIMULATION_DISTANCE: "7"
+      PVP: "true"
+      ONLINE_MODE: "true"
+      SPAWN_PROTECTION: "16"
+      MOTD: "\u00a7bJacob's Minecraft Server\u00a7r - \u00a7aBedrock + Java"
+      SERVER_NAME: "Jacob's Minecraft Server"
+
+      # RCON (internal only - never exposed to host)
+      ENABLE_RCON: "true"
+      RCON_PASSWORD: ${RCON_PASSWORD}
+
+      # Timezone
+      TZ: ${TZ:-Australia/Sydney}
+    healthcheck:
+      test: mc-health
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 3m
+
+  rcon:
+    image: itzg/rcon
+    container_name: mc-admin
+    restart: unless-stopped
+    depends_on:
+      minecraft:
+        condition: service_healthy
+    environment:
+      RWA_USERNAME: admin
+      RWA_PASSWORD: ${RCON_WEB_PASSWORD}
+      RWA_RCON_HOST: minecraft
+      RWA_RCON_PORT: "25575"
+      RWA_RCON_PASSWORD: ${RCON_PASSWORD}
+      TZ: ${TZ:-Australia/Sydney}
+    networks:
+      - default
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.mc-admin.rule=Host(`mc-admin.jsamo.com`)"
+      - "traefik.http.routers.mc-admin.entrypoints=websecure"
+      - "traefik.http.routers.mc-admin.tls.certresolver=cloudflare"
+      - "traefik.http.routers.mc-admin.middlewares=secured@file"
+      - "traefik.http.services.mc-admin.loadbalancer.server.port=4326"
+
+  mc-backup:
+    image: itzg/mc-backup
+    container_name: mc-backup
+    restart: unless-stopped
+    depends_on:
+      minecraft:
+        condition: service_healthy
+    environment:
+      RCON_HOST: minecraft
+      RCON_PORT: "25575"
+      RCON_PASSWORD: ${RCON_PASSWORD}
+      BACKUP_INTERVAL: 24h
+      PRUNE_BACKUPS_DAYS: "7"
+      TZ: ${TZ:-Australia/Sydney}
+    volumes:
+      - ./minecraft/data:/data:ro
+      - ./minecraft/backups:/backups
+
+networks:
+  proxy:
+    external: true
