@@ -1,7 +1,12 @@
 {
   "permissions": {
     "allow": [
-      "Bash(git mv:*)"
+      "Bash(git mv:*)",
+      "Bash(docker ps:*)",
+      "Bash(docker network ls:*)",
+      "Bash(ls:*)",
+      "Bash(docker network inspect:*)",
+      "Bash(docker exec:*)"
     ]
   }
 }

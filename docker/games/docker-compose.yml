@@ -10,7 +10,7 @@ services:
       - ./minecraft/data:/data
     environment:
       # Agreement & Server Type
-      EULA: "TRUE"
+      EULA: true
       TYPE: PAPER
       VERSION: LATEST
 
@@ -61,17 +61,30 @@ services:
       RWA_RCON_HOST: minecraft
       RWA_RCON_PORT: "25575"
       RWA_RCON_PASSWORD: ${RCON_PASSWORD}
+      RWA_WEBSOCKET_URL_SSL: wss://mc-admin.jsamo.com
       TZ: ${TZ:-Australia/Sydney}
     networks:
       - default
       - proxy
     labels:
       - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
+      # Web UI router (port 4326)
       - "traefik.http.routers.mc-admin.rule=Host(`mc-admin.jsamo.com`)"
       - "traefik.http.routers.mc-admin.entrypoints=websecure"
+      - "traefik.http.routers.mc-admin.tls=true"
       - "traefik.http.routers.mc-admin.tls.certresolver=cloudflare"
       - "traefik.http.routers.mc-admin.middlewares=secured@file"
+      - "traefik.http.routers.mc-admin.service=mc-admin"
       - "traefik.http.services.mc-admin.loadbalancer.server.port=4326"
+      # WebSocket router (port 4327)
+      - "traefik.http.routers.mc-admin-ws.rule=Host(`mc-admin.jsamo.com`) && HeaderRegexp(`Connection`, `(?i)upgrade`)"
+      - "traefik.http.routers.mc-admin-ws.entrypoints=websecure"
+      - "traefik.http.routers.mc-admin-ws.tls=true"
+      - "traefik.http.routers.mc-admin-ws.tls.certresolver=cloudflare"
+      - "traefik.http.routers.mc-admin-ws.middlewares=secured@file"
+      - "traefik.http.routers.mc-admin-ws.service=mc-admin-ws"
+      - "traefik.http.services.mc-admin-ws.loadbalancer.server.port=4327"
 
   mc-backup:
     image: itzg/mc-backup

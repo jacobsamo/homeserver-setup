@@ -22,7 +22,7 @@ services:
       TRAEFIK_DASHBOARD_CREDENTIALS: ${TRAEFIK_DASHBOARD_CREDENTIALS}
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.traefik.entrypoints=http"
+      - "traefik.http.routers.traefik.entrypoints=web"
       - "traefik.http.routers.traefik.rule=Host(`traefik.${DOMAIN}`)"
       - "traefik.http.middlewares.traefik-auth.basicauth.users=${TRAEFIK_DASHBOARD_CREDENTIALS}"
       - "traefik.http.middlewares.traefik-https-redirect.redirectscheme.scheme=https"
@@ -62,6 +62,7 @@ services:
       # Router definition for this application
       - "traefik.http.routers.whoami-app-router.rule=Host(`whoami.${DOMAIN}`)"
       - "traefik.http.routers.whoami-app-router.entrypoints=websecure"
+      - "traefik.http.routers.whoami-app-router.tls=true"
       - "traefik.http.routers.whoami-app-router.tls.certresolver=cloudflare"
       - "traefik.http.routers.whoami-app-router.service=whoami-app-service"
       # Service definition pointing to the container's port

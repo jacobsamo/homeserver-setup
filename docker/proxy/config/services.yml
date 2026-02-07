@@ -1,16 +1,7 @@
 http:
   routers:
-    proxmox:
-      entryPoints:
-        - "websecure"
-      rule: "Host(`proxmox.${DOMAIN}`)"
-      middlewares:
-        - default-headers
-        - https-redirectscheme
-      tls: {}
-      service: proxmox
     homeassistant:
-      rule: "Host(`homeassistant.${DOMAIN}`)"
+      rule: "Host(`ha.jsamo.com`)"
       service: homeassistant
       entryPoints:
         - "websecure"
@@ -18,38 +9,12 @@ http:
         - homeassistant-headers
       tls:
         certResolver: cloudflare
-    # n8n:
-    #   rule: Host(`n8n.${DOMAIN}`)
-    #   service: n8n
-    #   entryPoints:
-    #     - websecure
-    #   tls:
-    #     certResolver: cloudflare
-    # pihole:
-    #   rule: Host(`pihole.${DOMAIN}`)
-    #   service: pihole
-    #   entryPoints:
-    #     - websecure
-    #   tls:
-    #     certResolver: cloudflare
 
   services:
-    proxmox:
-      loadBalancer:
-        servers:
-          - url: https://192.168.0.102:8006 # Use https:// if required
     homeassistant:
       loadBalancer:
         servers:
           - url: http://192.168.0.105:8123
-    # n8n:
-    #   loadBalancer:
-    #     servers:
-    #       - url: http://192.168.0.109:5678
-    # pihole:
-    #   loadBalancer:
-    #     servers:
-    #       - url: http://192.168.0.111:80
 
   middlewares:
     https-redirectscheme:
