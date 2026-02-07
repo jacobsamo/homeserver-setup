@@ -104,6 +104,14 @@ services:
       - ./minecraft/data:/data:ro
       - ./minecraft/backups:/backups
 
+  playit:
+    image: ghcr.io/playit-cloud/playit-agent:0.16
+    container_name: playit
+    restart: unless-stopped
+    network_mode: host
+    environment:
+      SECRET_KEY: ${PLAYIT_SECRET_KEY}
+
 networks:
   proxy:
     external: true

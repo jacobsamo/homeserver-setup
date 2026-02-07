@@ -1,49 +1,118 @@
 - name: Home
-  # Optionally, if you only have a single page you can hide the desktop navigation for a cleaner look
-  # hide-desktop-navigation: true
   columns:
     - size: small
       widgets:
         - type: calendar
           first-day-of-week: monday
 
-        - type: rss
-          limit: 10
-          collapse-after: 3
-          cache: 12h
-          feeds:
-            - url: https://selfh.st/rss/
-              title: selfh.st
-            - url: https://ciechanow.ski/atom.xml
-            - url: https://www.joshwcomeau.com/rss.xml
-              title: Josh Comeau
-            - url: https://samwho.dev/rss.xml
-            - url: https://ishadeed.com/feed.xml
-              title: Ahmad Shadeed
+        - type: weather
+          location: Brisbane, Australia
+          units: metric
+          hour-format: 12h
 
-        - type: twitch-channels
-          channels:
-            - theprimeagen
-            - j_blow
-            - giantwaffle
-            - cohhcarnage
-            - christitustech
-            - EJ_SA
+        - type: monitor
+          title: Services
+          style: compact
+          sites:
+            - name: Glance
+              url: https://jsamo.com
+              icon: si:glance
+            - name: Portainer
+              url: https://portainer.jsamo.com
+              icon: si:portainer
+            - name: Uptime Kuma
+              url: https://status.jsamo.com
+              icon: si:uptimekuma
+            - name: N8N
+              url: https://n8n.jsamo.com
+              icon: si:n8n
+            - name: Home Assistant
+              url: https://ha.jsamo.com
+              icon: si:homeassistant
+            - name: Traefik
+              url: https://traefik.jsamo.com
+              icon: si:traefikproxy
+            - name: MC Admin
+              url: https://mc-admin.jsamo.com
+              icon: di:minecraft
+
+        - type: monitor
+          title: Websites
+          style: compact
+          sites:
+            - name: jacobsamo.com
+              url: https://jacobsamo.com
+              icon: si:google
+            - name: buzztrip.co
+              url: https://buzztrip.co
+              icon: si:google
+            - name: mixicooking.com
+              url: https://mixicooking.com
+              icon: si:google
 
     - size: full
       widgets:
+        - type: bookmarks
+          title: Homelab
+          groups:
+            - name: Management
+              links:
+                - title: Portainer
+                  url: https://portainer.jsamo.com
+                  icon: si:portainer
+                - title: Traefik Dashboard
+                  url: https://traefik.jsamo.com
+                  icon: si:traefikproxy
+                - title: Uptime Kuma
+                  url: https://status.jsamo.com
+                  icon: si:uptimekuma
+            - name: Apps
+              links:
+                - title: N8N
+                  url: https://n8n.jsamo.com
+                  icon: si:n8n
+                - title: Home Assistant
+                  url: https://ha.jsamo.com
+                  icon: si:homeassistant
+            - name: Games
+              links:
+                - title: MC Admin
+                  url: https://mc-admin.jsamo.com
+                  icon: di:minecraft
+                - title: "Minecraft Java: jsamo.com:25565"
+                  url: https://mc-admin.jsamo.com
+                  icon: di:minecraft
+                - title: "Minecraft Bedrock: jsamo.com:19132"
+                  url: https://mc-admin.jsamo.com
+                  icon: di:minecraft
+            - name: My Websites
+              links:
+                - title: jacobsamo.com
+                  url: https://jacobsamo.com
+                - title: buzztrip.co
+                  url: https://buzztrip.co
+                - title: mixicooking.com
+                  url: https://mixicooking.com
+
         - type: group
           widgets:
             - type: hacker-news
             - type: lobsters
 
-        - type: videos
-          channels:
-            - UCXuqSBlHAE6Xw-yeJA0Tunw # Linus Tech Tips
-            - UCR-DXc1voovS8nhAvccRZhg # Jeff Geerling
-            - UCsBjURrPoezykLs9EqgamOA # Fireship
-            - UCBJycsmduvYEL83R_U4JriQ # Marques Brownlee
-            - UCHnyfMqiRRG1u-2MsSQLbXA # Veritasium
+        - type: rss
+          title: News
+          limit: 15
+          collapse-after: 5
+          cache: 1h
+          feeds:
+            - url: https://feeds.bbci.co.uk/news/technology/rss.xml
+              title: BBC Tech
+            - url: https://www.theverge.com/rss/index.xml
+              title: The Verge
+            - url: https://selfh.st/rss/
+              title: selfh.st
+            - url: https://feeds.arstechnica.com/arstechnica/index
+              title: Ars Technica
 
         - type: group
           widgets:
@@ -56,33 +125,41 @@
 
     - size: small
       widgets:
-        - type: weather
-          location: London, United Kingdom
-          units: metric # alternatively "imperial"
-          hour-format: 12h # alternatively "24h"
-          # Optionally hide the location from being displayed in the widget
-          # hide-location: true
-
         - type: markets
+          title: Markets
           markets:
             - symbol: SPY
               name: S&P 500
             - symbol: BTC-USD
               name: Bitcoin
+            - symbol: ETH-USD
+              name: Ethereum
             - symbol: NVDA
               name: NVIDIA
             - symbol: AAPL
               name: Apple
             - symbol: MSFT
               name: Microsoft
+            - symbol: GOOGL
+              name: Alphabet
+            - symbol: TSLA
+              name: Tesla
+
+        - type: videos
+          title: YouTube
+          channels:
+            - UCXuqSBlHAE6Xw-yeJA0Tunw # Linus Tech Tips
+            - UCR-DXc1voovS8nhAvccRZhg # Jeff Geerling
+            - UCsBjURrPoezykLs9EqgamOA # Fireship
+            - UCBJycsmduvYEL83R_U4JriQ # MKBHD
+            - UCHnyfMqiRRG1u-2MsSQLbXA # Veritasium
 
         - type: releases
+          title: Releases
           cache: 1d
-          # Without authentication the Github API allows for up to 60 requests per hour. You can create a
-          # read-only token from your Github account settings and use it here to increase the limit.
-          # token: ...
           repositories:
             - glanceapp/glance
-            - go-gitea/gitea
             - immich-app/immich
-            - syncthing/syncthing
+            - louislam/uptime-kuma
+            - portainer/portainer
+            - n8nio/n8n

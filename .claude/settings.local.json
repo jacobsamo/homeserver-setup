@@ -6,7 +6,8 @@
       "Bash(docker network ls:*)",
       "Bash(ls:*)",
       "Bash(docker network inspect:*)",
-      "Bash(docker exec:*)"
+      "Bash(docker exec:*)",
+      "WebFetch(domain:github.com)"
     ]
   }
 }
